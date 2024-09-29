@@ -15,6 +15,7 @@ func (uc implUseCase) CreateOrder(ctx context.Context, input CreateOrderInput) (
 		input.Quantity,
 	}
 	orders[input.ID] = order
+	uc.kafka.SendMsg("create_order", 0, "Order created")
 	return order, nil
 }
 
