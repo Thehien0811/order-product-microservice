@@ -1,19 +1,28 @@
 package usecase
 
-import "github.com/gin-gonic/gin"
+import (
+	"errors"
 
-func (uc implUseCase) CreateOrder(ctx gin.Context, input CreateOrderInput) (DetailOrder, error) {
-	return DetailOrder{
+	"golang.org/x/net/context"
+)
+
+var orders = make(map[string]DetailOrder)
+
+func (uc implUseCase) CreateOrder(ctx context.Context, input CreateOrderInput) (DetailOrder, error) {
+	order := DetailOrder{
 		input.ID,
 		input.Name,
 		input.Quantity,
-	}, nil
+	}
+	orders[input.ID] = order
+	return order, nil
 }
 
-func (uc implUseCase) DetailOrder(ctx gin.Context, id string) (DetailOrder, error) {
-	return DetailOrder{
-		ID: id,
-		Name: "A",
-		Quantity: 1,
-	}, nil
+func (uc implUseCase) DetailOrder(ctx context.Context, id string) (*DetailOrder, error) {
+
+	order, exists := orders[id]
+	if !exists {
+		return nil, errors.New("Not found order")
+	}
+	return &order, nil
 }
