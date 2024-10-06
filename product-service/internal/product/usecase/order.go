@@ -11,3 +11,8 @@ type DetailProduct struct {
 	Name     string
 	Quantity int32
 }
+
+type UpdateProductInput struct {
+	ID       string
+	Quantity int32
+}

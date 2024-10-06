@@ -3,6 +3,7 @@ package usecase
 import (
 	"log"
 
+	model "github.com/Thehien0811/order-product-microservice/internal/models"
 	"github.com/Thehien0811/order-product-microservice/internal/product/repository"
 	"golang.org/x/net/context"
 )
@@ -35,4 +36,9 @@ func (uc implUseCase) DetailProduct(ctx context.Context, id string) (DetailProdu
 		o.Name,
 		o.Quantity,
 	}, nil
+}
+
+func (uc implUseCase) UpdateProduct(ctx context.Context, product model.Product) (bool, error) {
+	res, err := uc.repo.UpdateProduct(ctx, product)
+	return res, err
 }

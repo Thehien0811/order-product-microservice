@@ -2,6 +2,7 @@ package mongo
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	model "github.com/Thehien0811/order-product-microservice/internal/models"
@@ -51,5 +52,22 @@ func (repo implRepository) DetailProduct(ctx context.Context, id string) (model.
 	}
 
 	return orders[0], nil
+}
 
+func (repo implRepository) UpdateProduct(ctx context.Context, product model.Product) (bool, error) {
+	col := repo.getProductCollection()
+
+	// Xác định tiêu chí và cập nhật
+	filter := bson.M{"_id": product.ID}
+	update := bson.M{"$set": bson.M{"quantity": product.Quantity}}
+	updateResult, err := col.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return false, fmt.Errorf("could not update product quantity: %v", err)
+	}
+
+	if updateResult.MatchedCount == 0 {
+		return false, fmt.Errorf("no product found with ID: %v", product.ID.Hex())
+	}
+
+	return true, nil
 }

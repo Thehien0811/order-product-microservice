@@ -6,4 +6,5 @@ func MapRoutes(r *gin.RouterGroup, h Handler) {
 	group := r.Group("/")
 	group.POST("", h.Create)
 	group.GET("/:id", h.Get)
+	group.PATCH("/:id", h.Update)
 }
