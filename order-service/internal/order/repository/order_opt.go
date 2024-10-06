@@ -14,4 +14,5 @@ type CreateOrderOption struct {
 
 type Repository interface {
 	CreateOrder(ctx context.Context, opt CreateOrderOption) (model.Order, error)
+	DetailOrder(ctx context.Context, id string) (model.Order, error)
 }

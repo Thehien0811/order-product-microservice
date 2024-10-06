@@ -8,7 +8,7 @@ import (
 
 type UseCase interface {
 	CreateOrder(ctx context.Context, input CreateOrderInput) (DetailOrder, error)
-	DetailOrder(ctx context.Context, id string) (*DetailOrder, error)
+	DetailOrder(ctx context.Context, id string) (DetailOrder, error)
 }
 
 type implUseCase struct {
