@@ -8,9 +8,8 @@ import (
 )
 
 type CreateOrderReq struct {
-	ID       string `json:"id"`
 	Name     string `json:"name"`
-	Quantity int    `json:"quantity"`
+	Quantity int32  `json:"quantity"`
 }
 
 func (h handler) Create(c *gin.Context) {
@@ -26,7 +25,6 @@ func (h handler) Create(c *gin.Context) {
 	}
 
 	input := usecase.CreateOrderInput{
-		ID:       req.ID,
 		Name:     req.Name,
 		Quantity: req.Quantity,
 	}
@@ -61,7 +59,7 @@ func (h handler) Get(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{
-		"status":  200,
-		"data":    o,
+		"status": 200,
+		"data":   o,
 	})
 }

@@ -2,21 +2,28 @@ package usecase
 
 import (
 	"errors"
+	"log"
 
+	"github.com/Thehien0811/order-product-microservice/internal/order/repository"
 	"golang.org/x/net/context"
 )
 
 var orders = make(map[string]DetailOrder)
 
 func (uc implUseCase) CreateOrder(ctx context.Context, input CreateOrderInput) (DetailOrder, error) {
-	order := DetailOrder{
-		input.ID,
-		input.Name,
-		input.Quantity,
+	o, err := uc.repo.CreateOrder(ctx, repository.CreateOrderOption{
+		Name: input.Name,
+		Quantity: input.Quantity,
+	})
+	if err != nil {
+		log.Fatal(err)
 	}
-	orders[input.ID] = order
-	uc.kafka.SendMsg("create_order", 0, "Order created")
-	return order, nil
+	return DetailOrder{
+		o.ID.String(),
+		o.Name,
+		o.Quantity,
+	}, nil
+
 }
 
 func (uc implUseCase) DetailOrder(ctx context.Context, id string) (*DetailOrder, error) {

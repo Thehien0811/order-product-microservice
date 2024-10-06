@@ -1,8 +1,9 @@
 package usecase
 
 import (
-	"golang.org/x/net/context"
+	"github.com/Thehien0811/order-product-microservice/internal/order/repository"
 	"github.com/Thehien0811/order-product-microservice/kafka"
+	"golang.org/x/net/context"
 )
 
 type UseCase interface {
@@ -11,15 +12,18 @@ type UseCase interface {
 }
 
 type implUseCase struct {
-	kafka kafka.UseCase
+	//kafka kafka.UseCase
+	repo repository.Repository
 }
 
 var _ UseCase = implUseCase{}
 
 func New(
 	k kafka.UseCase,
+	repo repository.Repository,
 ) UseCase {
 	return implUseCase{
-		kafka: k,
+		//kafka: k,
+		repo: repo,
 	}
 }

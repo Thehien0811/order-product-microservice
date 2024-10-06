@@ -3,11 +3,11 @@ package usecase
 type CreateOrderInput struct {
 	ID       string
 	Name     string
-	Quantity int
+	Quantity int32
 }
 
 type DetailOrder struct {
 	ID       string
 	Name     string
-	Quantity int
+	Quantity int32
 }
