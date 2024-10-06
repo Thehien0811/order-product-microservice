@@ -8,7 +8,7 @@ import (
 
 type CreateOrderOption struct {
 	ID       string
-	Name     string
+	ProductID     string
 	Quantity int32
 }
 

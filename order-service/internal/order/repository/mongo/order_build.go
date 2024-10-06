@@ -8,9 +8,9 @@ import (
 
 func (repo implRepository) buildOrderModel(opt repository.CreateOrderOption) model.Order {
 	s := model.Order{
-		ID:       primitive.NewObjectID(),
-		Name:     opt.Name,
-		Quantity: opt.Quantity,
+		ID:        primitive.NewObjectID(),
+		ProductID: opt.ProductID,
+		Quantity:  opt.Quantity,
 	}
 	return s
 }

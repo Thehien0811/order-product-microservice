@@ -8,8 +8,8 @@ import (
 )
 
 type CreateOrderReq struct {
-	Name     string `json:"name"`
-	Quantity int32  `json:"quantity"`
+	ProductID string `json:"product_id"`
+	Quantity  int32  `json:"quantity"`
 }
 
 func (h handler) Create(c *gin.Context) {
@@ -25,8 +25,8 @@ func (h handler) Create(c *gin.Context) {
 	}
 
 	input := usecase.CreateOrderInput{
-		Name:     req.Name,
-		Quantity: req.Quantity,
+		ProductID: req.ProductID,
+		Quantity:  req.Quantity,
 	}
 
 	o, err := h.uc.CreateOrder(ctx, input)

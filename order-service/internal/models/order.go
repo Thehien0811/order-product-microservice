@@ -5,7 +5,7 @@ import (
 )
 
 type Order struct {
-	ID       primitive.ObjectID `bson:"_id"`
-	Name     string             `bson:"name"`
-	Quantity int32              `bson:"quantity"`
+	ID        primitive.ObjectID `bson:"_id"`
+	ProductID string             `bson:"product_id"`
+	Quantity  int32              `bson:"quantity"`
 }

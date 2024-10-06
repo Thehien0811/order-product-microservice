@@ -4,13 +4,19 @@ import (
 	"log"
 
 	"github.com/Thehien0811/order-product-microservice/internal/order/repository"
+	"github.com/Thehien0811/order-product-microservice/pkg/curl"
 	"golang.org/x/net/context"
 )
 
 func (uc implUseCase) CreateOrder(ctx context.Context, input CreateOrderInput) (DetailOrder, error) {
+	_, err := curl.DetailProduct(input.ProductID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	o, err := uc.repo.CreateOrder(ctx, repository.CreateOrderOption{
-		Name:     input.Name,
-		Quantity: input.Quantity,
+		ProductID: input.ProductID,
+		Quantity:  input.Quantity,
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -18,7 +24,7 @@ func (uc implUseCase) CreateOrder(ctx context.Context, input CreateOrderInput) (
 
 	return DetailOrder{
 		o.ID.Hex(),
-		o.Name,
+		o.ProductID,
 		o.Quantity,
 	}, nil
 
@@ -28,10 +34,11 @@ func (uc implUseCase) DetailOrder(ctx context.Context, id string) (DetailOrder, 
 	o, err := uc.repo.DetailOrder(ctx, id)
 	if err != nil {
 		log.Fatal(err)
+		return DetailOrder{}, nil
 	}
 	return DetailOrder{
 		o.ID.Hex(),
-		o.Name,
+		o.ProductID,
 		o.Quantity,
 	}, nil
 }
