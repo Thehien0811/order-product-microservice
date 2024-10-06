@@ -28,6 +28,7 @@ func (uc implUseCase) DetailProduct(ctx context.Context, id string) (DetailProdu
 	o, err := uc.repo.DetailProduct(ctx, id)
 	if err != nil {
 		log.Fatal(err)
+		return DetailProduct{}, nil
 	}
 	return DetailProduct{
 		o.ID.Hex(),
