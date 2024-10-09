@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"errors"
 	"log"
 
 	"github.com/Thehien0811/order-product-microservice/internal/order/repository"
@@ -9,9 +10,13 @@ import (
 )
 
 func (uc implUseCase) CreateOrder(ctx context.Context, input CreateOrderInput) (DetailOrder, error) {
-	_, err := curl.DetailProduct(input.ProductID)
+	p, err := curl.DetailProduct(input.ProductID)
 	if err != nil {
 		log.Fatal(err)
+	}
+
+	if p.Quantity < input.Quantity {
+		return DetailOrder{}, errors.New("Warning")
 	}
 
 	o, err := uc.repo.CreateOrder(ctx, repository.CreateOrderOption{
@@ -22,6 +27,11 @@ func (uc implUseCase) CreateOrder(ctx context.Context, input CreateOrderInput) (
 		log.Fatal(err)
 	}
 
+	s := curl.UpdateProductStock(input.ProductID, int(p.Quantity - input.Quantity))
+	if !s {
+		return DetailOrder{}, err
+	}
+	
 	return DetailOrder{
 		o.ID.Hex(),
 		o.ProductID,

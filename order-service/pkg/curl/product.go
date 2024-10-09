@@ -3,45 +3,69 @@ package curl
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 )
 
-func DetailProduct(id string) (bool, error) {
+type ProductResponse struct {
+	Data   Product `json:"data"`
+	Status int     `json:"status"`
+}
+
+type Product struct {
+	ID       string `json:"ID"`
+	Name     string `json:"Name"`
+	Quantity int32    `json:"Quantity"`
+}
+
+func DetailProduct(id string) (*Product, error) {
 	resp, err := http.Get("http://localhost:8002/api/v1/products/" + id)
 	if err != nil {
 		log.Fatal(err)
-		return false, err
+		return nil, err
 	}
 	if resp.StatusCode != http.StatusOK {
-		return false, err
+		return nil, err
+	}
+    body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
 	}
 
-	return true, nil
+	var productResp ProductResponse
+	err = json.Unmarshal(body, &productResp)
+	if err != nil {
+		return nil, err
+	}
+
+	return &productResp.Data, nil
 }
 
 func UpdateProductStock(productID string, quantity int) bool {
-	// Chuẩn bị yêu cầu JSON
-	body, err := json.Marshal(map[string]interface{}{
-		"product_id": productID,
-		"quantity":   quantity,
-	})
-	if err != nil {
-		log.Fatal(err)
-		return false
-	}
+    url := "http://localhost:8002/api/v1/products/" + productID
 
-	// Gửi yêu cầu POST tới Product Service
-	resp, err := http.Post("http://localhost:8081/update_stock", "application/json", bytes.NewBuffer(body))
-	if err != nil {
-		log.Fatal(err)
-		return false
-	}
-	defer resp.Body.Close()
+    jsonStr := []byte(fmt.Sprintf(`{"quantity": %d}`, quantity))
 
-	if resp.StatusCode != http.StatusOK {
-		return false
-	}
+    req, err := http.NewRequest(http.MethodPatch, url, bytes.NewBuffer(jsonStr))
+    if err != nil {
+        fmt.Println("Error creating request:", err)
+        return false
+    }
 
-	return true
+    req.Header.Set("Content-Type", "application/json")
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        fmt.Println("Error sending request:", err)
+        return false
+    }
+    defer resp.Body.Close()
+
+    body, _ := ioutil.ReadAll(resp.Body)
+    fmt.Println("Response:", string(body))
+    return true
 }
+
